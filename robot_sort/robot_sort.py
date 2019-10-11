@@ -92,12 +92,83 @@ class SortingRobot:
         """
         return self._light == "ON"
 
+    def at_end(self):
+        if self.light_is_on and self.can_move_left == False:
+            return True
+        elif not self.light_is_on and self.can_move_right==False:
+            return True
+        else:
+            return False
+
+    def final_sort(self):
+        if self.light_is_on():
+            while self.can_move_right():
+                if self.compare_item()==-1 or self.compare_item() == None:
+                    self.swap_item()
+                    self.set_light_off()
+                    self.move_right()
+                    return False
+                elif self.can_move_right():
+                    self.move_right()
+            return True
+        else:
+            while self.can_move_left():
+                if self.compare_item()==1:
+                    self.swap_item()
+                    self.set_light_on()
+                    self.move_left()
+                    return False
+                elif self.can_move_left():
+                    self.move_left()
+            
+            return True
+
+
+    def shake_right(self):
+        if (self.compare_item()==-1 or self.compare_item()==None) and self.can_move_right():
+            self.move_right()
+            if self.compare_item()!=1:
+                self.move_left()
+                self.swap_item()
+                self.move_right()
+                return True
+        else:
+            return self.move_right()
+        
+    def shake_left(self):
+        if self.compare_item()==1 and self.can_move_left():
+            self.move_left()
+            if self.compare_item()!=1:
+                self.move_right()
+                self.swap_item()
+                self.move_left()
+                return True
+        else:
+            return self.move_left()
+
     def sort(self):
         """
         Sort the robot's list.
         """
-        # Fill this out
-        pass
+        while self.move_left():
+            pass
+
+        self.swap_item()
+        self.set_light_off()
+
+        while True:
+            
+            if self.light_is_on() == False and self.shake_right() == False:
+                if self.final_sort():
+                    return
+            elif self.light_is_on() and self.shake_left() == False:
+                if self.final_sort():
+                    return
+
+            
+                
+        
+
 
 
 if __name__ == "__main__":
